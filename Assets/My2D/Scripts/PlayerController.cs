@@ -104,6 +104,12 @@ namespace My2D
 
         //점프
         [SerializeField] private float jumpForce = 5f;
+
+        //죽음 체크
+        public bool IsDeath
+        {
+            get { return animator.GetBool(AnimationString.IsDeath); }
+        }
         #endregion
         void Awake()
         {
@@ -142,11 +148,18 @@ namespace My2D
         }
 
         public void OnMove(InputAction.CallbackContext context)
-        {
+        {                
             inputMove = context.ReadValue<Vector2>();
-            IsMove = inputMove != Vector2.zero;
-
-            SetFacingDirection(inputMove);
+            if (!IsDeath)
+            {
+                IsMove = inputMove != Vector2.zero;
+                SetFacingDirection(inputMove);
+            }
+            else
+            {
+                IsMove = false;
+            }
+            
         }
 
         public void OnRun(InputAction.CallbackContext context)

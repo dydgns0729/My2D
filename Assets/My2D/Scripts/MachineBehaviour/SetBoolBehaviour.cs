@@ -32,7 +32,7 @@ namespace My2D
         {
             if (updateOnState)
             {
-                animator.SetBool(boolName, valueEnter);
+                animator.SetBool(boolName, valueExit);
             }
         }
 
