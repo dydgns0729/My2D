@@ -11,7 +11,7 @@ namespace My2D
 
         private SpriteRenderer spriteRenderer;
         private GameObject removeObject;
-        private Color StartColor;
+        private Color startColor;
 
         //fade효과
         public float fadeTimer = 1f;
@@ -26,7 +26,7 @@ namespace My2D
         {
             //참조
             spriteRenderer = animator.GetComponent<SpriteRenderer>();
-            StartColor = spriteRenderer.color;
+            startColor = spriteRenderer.color;
             removeObject = animator.gameObject;
             //초기화
             countdown = fadeTimer;
@@ -48,8 +48,8 @@ namespace My2D
             //페이드 아웃 효과 color.a : 1->0
             countdown -= Time.deltaTime;
 
-            float newAlpha = StartColor.a * (countdown / fadeTimer);
-            spriteRenderer.color = new Color(StartColor.r, StartColor.g, StartColor.b, newAlpha);
+            float newAlpha = startColor.a * (countdown / fadeTimer);
+            spriteRenderer.color = new Color(startColor.r, startColor.g, startColor.b, newAlpha);
 
             //페이드 타임 끝
             if (countdown <= 0f)

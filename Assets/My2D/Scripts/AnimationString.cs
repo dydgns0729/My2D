@@ -18,6 +18,8 @@ namespace My2D
         public static string CanMove = "CanMove";
         public static string HitTrigger = "HitTrigger";
         public static string IsDeath = "IsDeath";
+        public static string LockVelocity = "LockVelocity";
+        public static string BowTrigger = "BowTrigger";
         #endregion
     }
 }

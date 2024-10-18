@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace My2D
 {
@@ -10,6 +11,9 @@ namespace My2D
         #region Variables
         //감지된 콜라이더
         public List<Collider2D> detectedColliders = new List<Collider2D>();
+
+        //충돌체 리스트가 비어있다면 호출되는 함수
+        public UnityAction noColliderRamain;
 
         #endregion
 
@@ -23,6 +27,12 @@ namespace My2D
         {
             //충돌체가 나가면 리스트에서 제거한다
             detectedColliders.Remove(collision);
+
+            //충돌체가 하나도 남아있지 않다면
+            if(detectedColliders.Count <= 0)
+            {
+                noColliderRamain?.Invoke();
+            }
         }
     }
 }

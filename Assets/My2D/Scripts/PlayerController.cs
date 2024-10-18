@@ -9,6 +9,7 @@ namespace My2D
         Rigidbody2D rb2d;
         Animator animator;
         TouchingDirections touchingDirections;
+        Damageable damageable;
 
         //플레이어 이동 속도
         [SerializeField] float walkSpeed = 4f;
@@ -117,6 +118,9 @@ namespace My2D
             rb2d = GetComponent<Rigidbody2D>();
             animator = GetComponent<Animator>();
             touchingDirections = GetComponent<TouchingDirections>();
+            damageable = GetComponent<Damageable>();
+            damageable.hitAction += OnHit;  //UnityAction 델리게이트 함수에 등록
+
             //초기화
             isMove = false;
             isRun = false;
@@ -125,11 +129,16 @@ namespace My2D
 
         private void FixedUpdate()
         {
-            //플레이어 좌우 이동
-            rb2d.velocity = new Vector2(inputMove.x * CurrentMoveSpeed, rb2d.velocity.y);
+            if (!damageable.LockVelocity)
+            {
+                //플레이어 좌우 이동
+                rb2d.velocity = new Vector2(inputMove.x * CurrentMoveSpeed, rb2d.velocity.y);
 
-            //YVelocity 값 조절
-            animator.SetFloat(AnimationString.YVelocity, rb2d.velocity.y);
+                //YVelocity 값 조절
+                animator.SetFloat(AnimationString.YVelocity, rb2d.velocity.y);
+                return;
+            }
+
         }
 
         //바라보는 방향으로 전환(스케일 컨트롤)
@@ -189,6 +198,19 @@ namespace My2D
             {
                 animator.SetTrigger(AnimationString.AttackTrigger);
             }
+        }
+
+        public void OnBowAttack(InputAction.CallbackContext context)
+        {
+            if (context.started && touchingDirections.IsGround)
+            {
+                animator.SetTrigger(AnimationString.BowTrigger);
+            }
+        }
+
+        public void OnHit(float damage, Vector2 knockback)
+        {
+            rb2d.velocity = new Vector2(knockback.x, rb2d.velocity.y + knockback.y);
         }
     }
 }
