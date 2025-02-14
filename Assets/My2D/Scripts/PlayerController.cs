@@ -6,27 +6,28 @@ namespace My2D
     public class PlayerController : MonoBehaviour
     {
         #region Variables
-        Rigidbody2D rb2d;
-        Animator animator;
-        TouchingDirections touchingDirections;
-        Damageable damageable;
+        private Rigidbody2D rb2D;
+        private Animator animator;
+        private TouchingDirections touchingDirections;
+        private Damageable damageable;
+        private TrailEffect trailEffect;
 
         //플레이어 이동 속도
-        [SerializeField] float walkSpeed = 4f;
-        [SerializeField] float runSpeed = 8f;
-        [SerializeField] float airSpeed = 2f;
+        [SerializeField] private float walkSpeed = 4f;
+        [SerializeField] private float runSpeed = 8f;
+        [SerializeField] private float airSpeed = 2f;
 
         public float CurrentMoveSpeed
         {
             get
             {
-                if (CanMove)
+                if(CanMove)
                 {
                     if (IsMove && touchingDirections.IsWall == false)
                     {
                         if (touchingDirections.IsGround)
                         {
-                            if (IsRun)
+                            if (isRun)
                             {
                                 return runSpeed;
                             }
@@ -49,25 +50,29 @@ namespace My2D
                 {
                     return 0f;  //움직이지 못할때
                 }
-
             }
         }
 
         //이동여부
         public bool CanMove
         {
-            get { return animator.GetBool(AnimationString.CanMove); }
+            get
+            {
+                return animator.GetBool(AnimationString.CanMove);
+            }
         }
 
         //플레이어 이동과 관련된 입력값
-        Vector2 inputMove;
+        private Vector2 inputMove;
 
         //걷기
-        [SerializeField]
-        private bool isMove;
+        [SerializeField] private bool isMove = false;
         public bool IsMove
         {
-            get { return isMove; }
+            get
+            {
+                return isMove;
+            }
             set
             {
                 isMove = value;
@@ -76,10 +81,13 @@ namespace My2D
         }
 
         //뛰기
-        [SerializeField] private bool isRun;
+        [SerializeField] private bool isRun = false;
         public bool IsRun
         {
-            get { return isRun; }
+            get
+            {
+                return isRun;
+            }
             set
             {
                 isRun = value;
@@ -87,11 +95,14 @@ namespace My2D
             }
         }
 
-        //좌우 반전(스케일 컨트롤)
-        [SerializeField] private bool isFacingRight;
+        //좌우 반전
+        [SerializeField] private bool isFacingRight = true;
         public bool IsFacingRight
         {
-            get { return isFacingRight; }
+            get
+            {
+                return isFacingRight;
+            }
             set
             {
                 //반전
@@ -112,44 +123,40 @@ namespace My2D
             get { return animator.GetBool(AnimationString.IsDeath); }
         }
         #endregion
-        void Awake()
+
+        private void Awake()
         {
             //참조
-            rb2d = GetComponent<Rigidbody2D>();
+            rb2D = this.GetComponent<Rigidbody2D>();
             animator = GetComponent<Animator>();
             touchingDirections = GetComponent<TouchingDirections>();
-            damageable = GetComponent<Damageable>();
-            damageable.hitAction += OnHit;  //UnityAction 델리게이트 함수에 등록
+            trailEffect = GetComponent<TrailEffect>();  
 
-            //초기화
-            isMove = false;
-            isRun = false;
-            isFacingRight = true;
+            damageable = GetComponent<Damageable>();
+            damageable.hitAction += OnHit;              //UnityAction 델리게이트 함수에 등록
         }
 
         private void FixedUpdate()
         {
-            if (!damageable.LockVelocity)
+            if(!damageable.LockVelocity)
             {
                 //플레이어 좌우 이동
-                rb2d.velocity = new Vector2(inputMove.x * CurrentMoveSpeed, rb2d.velocity.y);
-
-                //YVelocity 값 조절
-                animator.SetFloat(AnimationString.YVelocity, rb2d.velocity.y);
-                return;
+                rb2D.velocity = new Vector2(inputMove.x * CurrentMoveSpeed, rb2D.velocity.y);
             }
 
+            //애니메이션 값
+            animator.SetFloat(AnimationString.YVelocity, rb2D.velocity.y);
         }
 
-        //바라보는 방향으로 전환(스케일 컨트롤)
+        //바라보는 방향을 전환
         void SetFacingDirection(Vector2 moveInput)
         {
-            if (moveInput.x > 0f && !IsFacingRight)
+            if(moveInput.x > 0f && IsFacingRight == false)
             {
                 //오른쪽을 바라본다
                 IsFacingRight = true;
             }
-            else if (moveInput.x < 0f && IsFacingRight)
+            else if (moveInput.x < 0f && IsFacingRight == true)
             {
                 //왼쪽을 바라본다
                 IsFacingRight = false;
@@ -157,27 +164,36 @@ namespace My2D
         }
 
         public void OnMove(InputAction.CallbackContext context)
-        {                
+        {
             inputMove = context.ReadValue<Vector2>();
-            if (!IsDeath)
-            {
-                IsMove = inputMove != Vector2.zero;
-                SetFacingDirection(inputMove);
-            }
-            else
+
+            if(IsDeath)
             {
                 IsMove = false;
             }
-            
+            else //살았으면
+            {
+                IsMove = (inputMove != Vector2.zero);
+
+                //방향전환
+                SetFacingDirection(inputMove);
+            }
         }
 
         public void OnRun(InputAction.CallbackContext context)
         {
-            if (context.started)        //입력값이 있으면
+            //누르기 시작하는 순간
+            if(context.started)
             {
                 IsRun = true;
+
+                //
+                if (trailEffect != null)
+                {
+                    trailEffect.StartActiveTrail();
+                }
             }
-            else if (context.canceled)  //입력이 종료되는 순간
+            else if(context.canceled)   //릴리즈 하는 순간
             {
                 IsRun = false;
             }
@@ -185,15 +201,23 @@ namespace My2D
 
         public void OnJump(InputAction.CallbackContext context)
         {
-            if (context.started && touchingDirections.IsGround)        //입력값이 있으면
+            //누르기 시작하는 순간, 이중 점프 x
+            if (context.started && touchingDirections.IsGround)
             {
                 animator.SetTrigger(AnimationString.JumpTrigger);
-                rb2d.velocity = new Vector2(rb2d.velocity.x, jumpForce);
+                rb2D.velocity = new Vector2(rb2D.velocity.x, jumpForce);
+
+                //
+                if(trailEffect != null)
+                {
+                    trailEffect.StartActiveTrail();
+                }
             }
         }
 
         public void OnAttack(InputAction.CallbackContext context)
         {
+            //마우스 클릭순간 시작하는 순간
             if (context.started && touchingDirections.IsGround)
             {
                 animator.SetTrigger(AnimationString.AttackTrigger);
@@ -202,6 +226,7 @@ namespace My2D
 
         public void OnBowAttack(InputAction.CallbackContext context)
         {
+            //F키 누르는순가 시작하는 순간
             if (context.started && touchingDirections.IsGround)
             {
                 animator.SetTrigger(AnimationString.BowTrigger);
@@ -210,7 +235,7 @@ namespace My2D
 
         public void OnHit(float damage, Vector2 knockback)
         {
-            rb2d.velocity = new Vector2(knockback.x, rb2d.velocity.y + knockback.y);
+            rb2D.velocity = new Vector2(knockback.x, rb2D.velocity.y + knockback.y);
         }
     }
 }

@@ -1,7 +1,8 @@
 using UnityEngine;
-using UnityEngine.Rendering;
 
 //animator Bool형 파라미터를 제어하는 클래스
+//animator int형 파라미터를 제어하는 클래스
+//animator float형 파라미터를 제어하는 클래스
 namespace My2D
 {
     public class SetBoolBehaviour : StateMachineBehaviour
@@ -12,10 +13,11 @@ namespace My2D
         public bool updateOnStateMachine;
         public bool valueEnter, valueExit;
         #endregion
+
         // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
         override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            if (updateOnState)
+            if(updateOnState)
             {
                 animator.SetBool(boolName, valueEnter);
             }
@@ -33,7 +35,7 @@ namespace My2D
             if (updateOnState)
             {
                 animator.SetBool(boolName, valueExit);
-            }
+            }   
         }
 
         // OnStateMove is called before OnStateMove is called on any state inside this state machine
@@ -63,7 +65,7 @@ namespace My2D
             if (updateOnStateMachine)
             {
                 animator.SetBool(boolName, valueExit);
-            }
+            }   
         }
     }
 }

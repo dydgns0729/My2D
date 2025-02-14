@@ -8,21 +8,18 @@ public class TestStateBehaviour : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //상태에 들어올때 1번 호출
-
     }
 
     // OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //상태를 유지할때 계속 호출
-
     }
 
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //상태를 나갈때 1번 호출
-
     }
 
     // OnStateMove is called before OnStateMove is called on any state inside this state machine

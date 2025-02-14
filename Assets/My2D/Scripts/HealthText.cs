@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+using TMPro;
 
 namespace My2D
 {
@@ -12,9 +10,9 @@ namespace My2D
         private RectTransform textTransform;
 
         //이동
-        [SerializeField] private float moveSpeed = 100f;
+        [SerializeField] private float moveSpeed = 5f;
 
-        //fade효과
+        //페이드 효과
         private Color startColor;
         public float fadeTimer = 1f;
         private float countdown = 0f;
@@ -39,19 +37,19 @@ namespace My2D
             //이동
             textTransform.position += Vector3.up * moveSpeed * Time.deltaTime;
 
-            //페이드 아웃 효과 color.a : 1->0
+            //페이드 아웃 효과 textHealth.color.a : 1 -> 0
             countdown -= Time.deltaTime;
 
             float newAlpha = startColor.a * (countdown / fadeTimer);
             textHealth.color = new Color(startColor.r, startColor.g, startColor.b, newAlpha);
 
             //페이드 타임 끝
-            if (countdown <= 0f)
+            if (countdown <= 0)
             {
                 Destroy(gameObject);
             }
 
         }
+
     }
 }
-

@@ -39,16 +39,16 @@ TagManager:
   - 
   m_SortingLayers:
   - name: Background
-    uniqueID: 755767167
+    uniqueID: 290952573
     locked: 0
   - name: TileMap
-    uniqueID: 3443757553
+    uniqueID: 1980439095
     locked: 0
   - name: Enemy
-    uniqueID: 3031705401
+    uniqueID: 747249443
     locked: 0
   - name: Player
-    uniqueID: 45935149
+    uniqueID: 530001719
     locked: 0
   - name: Default
     uniqueID: 0

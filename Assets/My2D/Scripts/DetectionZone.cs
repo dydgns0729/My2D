@@ -9,12 +9,11 @@ namespace My2D
     public class DetectionZone : MonoBehaviour
     {
         #region Variables
-        //감지된 콜라이더
+        //감지된 콜라이더 리스트 
         public List<Collider2D> detectedColliders = new List<Collider2D>();
 
-        //충돌체 리스트가 비어있다면 호출되는 함수
+        //충돌체 리스트에 충돌체가 더이상 없을때 호출되는 함수
         public UnityAction noColliderRamain;
-
         #endregion
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -25,10 +24,10 @@ namespace My2D
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            //충돌체가 나가면 리스트에서 제거한다
+            //충돌체가 나가면 리스트에세 삭제한다
             detectedColliders.Remove(collision);
 
-            //충돌체가 하나도 남아있지 않다면
+            //충돌체가 하나도 남아 있지 않으면
             if(detectedColliders.Count <= 0)
             {
                 noColliderRamain?.Invoke();

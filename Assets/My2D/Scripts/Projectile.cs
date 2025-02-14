@@ -7,8 +7,8 @@ namespace My2D
     public class Projectile : MonoBehaviour
     {
         #region Variables
-        private Rigidbody2D rb2d;
-        
+        private Rigidbody2D rb2D;
+
         //이동
         [SerializeField] private Vector2 moveSpeed = new Vector2(5f, 0f);
 
@@ -23,32 +23,34 @@ namespace My2D
         private void Awake()
         {
             //참조
-            rb2d = GetComponent<Rigidbody2D>();
+            rb2D = GetComponent<Rigidbody2D>();
         }
 
         private void Start()
         {
-            rb2d.velocity = new Vector2(moveSpeed.x * transform.localScale.x, moveSpeed.y);
+            rb2D.velocity = new Vector2(moveSpeed.x * transform.localScale.x, moveSpeed.y);
         }
+
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
             Damageable damageable = collision.GetComponent<Damageable>();
+
             if (damageable != null)
             {
-                //넉백의 방향 설정
-                Vector2 deliveredKnockback = (this.transform.localScale.x > 0) ? knockback : new Vector2(-knockback.x, knockback.y);
-
+                //knockback의 방향 설정
+                Vector2 deliveredKnockback = (transform.localScale.x > 0) ? knockback : new Vector2(-knockback.x, knockback.y);
                 damageable.TakeDamage(attackDamage, deliveredKnockback);
 
                 //데미지 이펙트
-                GameObject effectGo =Instantiate(impactEffectPrefab, collision.transform.position, Quaternion.identity);
+                GameObject effectGo = Instantiate(impactEffectPrefab, collision.transform.position, Quaternion.identity);
                 Destroy(effectGo, 0.5f);
-
 
                 //화살 킬
                 Destroy(gameObject);
             }
         }
+
+
     }
 }

@@ -1,16 +1,16 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace My2D {
+namespace My2D
+{
     //캐릭터와 관련된 이벤트 함수들을 관리하는 클래스
     public class CharacterEvents
     {
-        //캐릭터가 공격받으면 호출되는 델리게이트 함수
+        //캐릭터가 데미지를 입을때 등록된 함수 호출
         public static UnityAction<GameObject, float> characterDamaged;
-
-        //캐릭터가 체력을 회복할때 호출되는 델리게이트 함수
+        //캐릭터가 힐할때 등록된 함수 호출
         public static UnityAction<GameObject, float> characterHealed;
 
-
+        //...
     }
 }
